@@ -21,6 +21,7 @@ def run(save_path):
     
     if len(face_locations) == 0:
         print("No face detected :(")
+        cropped_faces = {"message": "No face detected :("}
     elif len(face_locations) == 1:
         temp_cropped_face = crop_face(save_path, face_locations)
         img_path = save_extracted_face_path + "/Face 1.jpg"
@@ -45,27 +46,30 @@ def run(save_path):
             }
 
     # predict gender
-    model_path = "model/model.h5"
-    custom_object = {"f1_m":f1_m, "precision_m":precision_m, "recall_m":recall_m}
+    if len(face_locations) != 0:
+        model_path = "model/model.h5"
+        custom_object = {"f1_m":f1_m, "precision_m":precision_m, "recall_m":recall_m}
 
-    model = tf.keras.models.load_model(model_path, custom_objects=custom_object)
+        model = tf.keras.models.load_model(model_path, custom_objects=custom_object)
 
-    for k, v in cropped_faces.items():
-        img_path = cropped_faces[k]["img_path"]
-        img = tf.keras.preprocessing.image.load_img(img_path, target_size=(150, 150))
-        x = tf.keras.preprocessing.image.img_to_array(img)
-        x = np.expand_dims(x, axis=0)
-        images = np.vstack([x])
-        classes = model.predict(images)
+        for k, v in cropped_faces.items():
+            img_path = cropped_faces[k]["img_path"]
+            img = tf.keras.preprocessing.image.load_img(img_path, target_size=(150, 150))
+            x = tf.keras.preprocessing.image.img_to_array(img)
+            x = np.expand_dims(x, axis=0)
+            images = np.vstack([x])
+            classes = model.predict(images)
 
-        if classes[0]>0.5:
-            cropped_faces[k]["gender"] = "Woman"
-        else:
-            cropped_faces[k]["gender"] = "Man"
-            
-    for f in os.listdir(save_extracted_face_path):
-        face = f.split(".")[0]
-        st.image(Image.open(save_extracted_face_path + "/" + f), caption=cropped_faces[face]["gender"])
+            if classes[0]>0.5:
+                cropped_faces[k]["gender"] = "Woman"
+            else:
+                cropped_faces[k]["gender"] = "Man"
+
+        for f in os.listdir(save_extracted_face_path):
+            face = f.split(".")[0]
+            st.image(Image.open(save_extracted_face_path + "/" + f), caption=cropped_faces[face]["gender"])
+    else:
+        st.write("No face detected :(")
 
 class application():
     
