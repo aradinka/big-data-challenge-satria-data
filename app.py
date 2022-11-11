@@ -72,13 +72,6 @@ class application():
     def __init__(self):
         
         st.write("## Sample photo")
-        with st.form("Analyze sample photo"):
-            sample_path = "sample_image/sample-1.jpg"
-            st.image(Image.open(sample_path), caption="Photo by Yanapi Senaud from Unsplash")
-            sample_photo = st.form_submit_button(label="Analyze")
-        
-        if sample_photo:
-            run(sample_path)
             
         with st.form("Analyze sample photo 2"):
             sample_path = "sample_image/sample-2.jpg"
