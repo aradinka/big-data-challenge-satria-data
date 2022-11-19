@@ -84,29 +84,5 @@ class application():
         
         if sample_photo_2:
             run(sample_path)
-            
-        st.write("## Try and upload your photos")
-        with st.form("Upload photos"):
-            uploaded_file = st.file_uploader(label = "Upload file", type=["jpg"])
-            submit_photo = st.form_submit_button(label='Submit')
-        
-        if submit_photo:
-            # save photo
-            save_folder = "uploaded photo"
-            if os.path.exists(save_folder):
-                shutil.rmtree(save_folder)
-                os.makedirs(save_folder)
-            else:
-                os.makedirs(save_folder)   
-                        
-            uploaded_path = Path(save_folder, uploaded_file.name)
-            with open(uploaded_path, mode='wb') as w:
-                w.write(uploaded_file.getvalue())
-                
-            run(uploaded_path)
-            
-
-
-
 
 app = application()
